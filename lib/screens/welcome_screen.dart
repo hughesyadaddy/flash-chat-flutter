@@ -1,5 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'chat_screen.dart';
 import 'login_screen.dart';
 import 'registration_screen.dart';
 import 'package:flash_chat/components/rounded_button.dart';
@@ -30,6 +32,32 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       setState(() {});
     });
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<FirebaseUser>(
+        future: FirebaseAuth.instance.currentUser(),
+        builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
+          if (snapshot.hasData) {
+            FirebaseUser user = snapshot.data; // this is your user instance
+            /// is because there is user already logged
+            return ChatScreen();
+          }
+
+          /// other way there is no user logged.
+          return Welcome(animation: animation);
+          ;
+        });
+  }
+}
+
+class Welcome extends StatelessWidget {
+  const Welcome({
+    Key key,
+    @required this.animation,
+  }) : super(key: key);
+
+  final Animation animation;
 
   @override
   Widget build(BuildContext context) {
